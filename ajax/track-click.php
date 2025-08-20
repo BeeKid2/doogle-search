@@ -45,6 +45,9 @@ try {
         $stmt->execute([$resultId]);
     }
     
+    // Log the click for ranking improvements
+    error_log("Click tracked: {$resultType} ID {$resultId} for query '{$searchTerm}'");
+    
     echo json_encode(['success' => $success]);
     
 } catch (Exception $e) {

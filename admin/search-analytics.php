@@ -183,6 +183,9 @@ try {
                         <a class="nav-link" href="settings.php">
                             <i class="fas fa-cog"></i> Settings
                         </a>
+                        <a class="nav-link" href="ranking-settings.php">
+                            <i class="fas fa-sort-amount-up"></i> Ranking Algorithm
+                        </a>
                         <div class="nav-separator my-3"></div>
                         <a class="nav-link" href="logout.php">
                             <i class="fas fa-sign-out-alt"></i> Logout

@@ -7,14 +7,30 @@ $(document).ready(function() {
 		
 		var id = $(this).attr("data-linkId");
 		var url = $(this).attr("href");
+		var searchTerm = $(this).attr("data-search-term");
 
 		if(!id) {
 			alert("data-linkId attribute not found"); //DEBUGGING
 		}
 
+		// Track click for ranking algorithm
+		if (searchTerm) {
+			trackClick(searchTerm, id, 'site');
+		}
+
 		increaseLinkClicks(id, url);
 
 		return false;
+	});
+
+	// Track image clicks
+	$("[data-fancybox]").on("click", function() {
+		var id = $(this).attr("data-linkId");
+		var searchTerm = $(this).attr("data-search-term");
+		
+		if (id && searchTerm) {
+			trackClick(searchTerm, id, 'image');
+		}
 	});
 
 
@@ -108,4 +124,28 @@ function increaseImageClicks(imageUrl) {
 		}
 	});
 
+}
+
+// Track clicks for ranking algorithm
+function trackClick(searchTerm, resultId, resultType) {
+	var data = {
+		search_term: searchTerm,
+		result_id: resultId,
+		result_type: resultType
+	};
+
+	$.ajax({
+		url: 'ajax/track-click.php',
+		type: 'POST',
+		contentType: 'application/json',
+		data: JSON.stringify(data),
+		success: function(response) {
+			// Click tracked successfully
+			console.log('Click tracked:', response);
+		},
+		error: function(xhr, status, error) {
+			// Silent failure - don't interrupt user experience
+			console.log('Click tracking failed:', error);
+		}
+	});
 }
