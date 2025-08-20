@@ -2,6 +2,7 @@
 include("config.php");
 include("classes/SiteResultsProvider.php");
 include("classes/ImageResultsProvider.php");
+include("classes/AnalyticsTracker.php");
 
 if(isset($_GET['term']))
 	$term = $_GET['term'];
@@ -10,6 +11,10 @@ else
 
 $type = isset($_GET["type"]) ? $_GET["type"] : "sites";
 $page = isset($_GET["page"]) ? $_GET["page"] : 1;
+
+// Initialize analytics tracker
+$analytics = new AnalyticsTracker($con);
+$startTime = microtime(true);
 ?>
 
 <!DOCTYPE html>
@@ -89,6 +94,11 @@ $page = isset($_GET["page"]) ? $_GET["page"] : 1;
 			}
 
 			$numResults = $resultsProvider->getNumResults($term);
+
+			// Track search analytics
+			$endTime = microtime(true);
+			$responseTime = round(($endTime - $startTime) * 1000); // Convert to milliseconds
+			$analytics->trackSearch($term, $type, $numResults, $responseTime);
 
 			echo "<p class='resultsCount'>$numResults results found</p>";
 			echo $resultsProvider->getResultsHtml($page, $pageSize, $term);
